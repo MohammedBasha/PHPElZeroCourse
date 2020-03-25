@@ -1,17 +1,28 @@
 <?php
+	$mainColor = '#fff'; // Set the main color
+	if($_SERVER['REQUEST_METHOD'] === 'POST') { // Check of it is a POST method
+		$mainColor = $_POST['color']; // Change the main color to the choosen one
+		setcookie('Background', $mainColor, time() + 3600, '/'); // Set a Cookie with the value of the color
+	}
 
-// dirname(__FILE__) => getting the directory path that holds the index.php file + then store a full pathe of the text file in $file.
+	if(isset($_COOKIE['Background'])) { // Check if there is a cookie with the 'Background' name
+		$body = $_COOKIE['Background']; // Store the color to a variable
+	} else {
+		$body = $mainColor; // or store the main color to a variable
+	}
+?>
 
-$file = dirname(__FILE__) . '\mb.txt';
 
-// Checks if the $file is writable then print a success message and write to it.
-
-// if(is_writeable($file)):
-if(is_writable($file)):
-	echo 'The file [' . basename($file) . '] writable';
-	file_put_contents($file, 'Writable by PHP');
-else:
-
-	// If It's not writable print a fail message.
-	echo 'The file [' . basename($file) . '] not writable';
-endif;
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Modify Cookie</title>
+	</head>
+	<!-- use the stored color in the variable to change the body background-color -->
+	<body style='background: <?php echo $body; ?>;'>
+		<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+			<input type="color" name="color">
+			<input type="submit" value="choose">
+		</form>
+	</body>
+</html>
