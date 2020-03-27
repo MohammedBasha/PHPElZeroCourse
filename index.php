@@ -5,5 +5,11 @@
 	$pass = ''; // Database Password
 
 
-	$db = new PDO($dsn, $user, $pass); // Connect to the Database with the PDO Class
+	try { // Try to connect to the database
+		$db = new PDO($dsn, $user, $pass); // Connect to the Database with the PDO Class
+		echo 'You are Connected';
+
+	} catch(PDOException $e) { // catch any errors while connecting
+		echo 'Connection Failed >>> ' . $e->getMessage();
+	}
 
