@@ -1,0 +1,1 @@
+Added this content with file_put_content() function
