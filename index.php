@@ -3,9 +3,22 @@
 /*==========================================================
 	[ Learn PHP 5 In Arabic ] #87 - #91
 ===========================================================*/
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Simple Login with Session</title>
+	</head>
+	<body>
+		<form action="chk.php" method="POST">
+			<input type="text" name="username">
+			<input type="submit" value="Login">
+		</form>
+	</body>
+<html>
 
-session_start();
-
+<?php
 /*==========================================================
 	[ Learn PHP 5 In Arabic ] #84 - #86
 ===========================================================*/
