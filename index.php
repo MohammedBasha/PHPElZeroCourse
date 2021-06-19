@@ -1,10 +1,32 @@
 <?php
 
 /*==========================================================
+	[ Learn PHP 5 In Arabic ] #92
+===========================================================*/
+
+function fileExist() {
+	if (file_exists('filea.txt')) {
+		echo 'The file is found';
+	} else {
+		sleep(2); // for int seconds
+
+		// usleep(2500000); // for a fraction of a second (2.5s)
+
+		fileExist();
+	}
+}
+
+fileExist();
+
+?>
+
+<?php
+
+/*==========================================================
 	[ Learn PHP 5 In Arabic ] #87 - #91
 ===========================================================*/
 ?>
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -16,7 +38,7 @@
 			<input type="submit" value="Login">
 		</form>
 	</body>
-<html>
+<html> -->
 
 <?php
 /*==========================================================
