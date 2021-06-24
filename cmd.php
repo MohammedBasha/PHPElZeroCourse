@@ -73,3 +73,43 @@
 
 // to change the character set for table to utf8 or latin1
 // > ALTER TBALE tableName CONVERT TO CHARACTER SET utf8;
+
+// to add a constraint not null to an existing or new column
+// > ALTER TBALE tableName MODIFY columnName varchar(255) NOT NULL;
+// > ALTER TBALE tableName ADD columnName varchar(255) NOT NULL;
+
+// to add or remove a constraint unique to column
+// ALTER TABLE tableName ADD UNIQUE(columnName);
+// ALTER TABLE tableName DROP INDEX columnName;
+
+// to add or remove a primary key to column
+// >  CREATE TABLE IF NOT EXISTS tableName (id int(11), name varchar(255), email varchar(255), PRIMARY KEY(id));
+// ALTER TABLE tableName ADD PRIMARY KEY (columnName);
+// ALTER TABLE tableName DROP PRIMARY KEY;
+
+// to know the indexes in table
+// > show indexes from tableName;
+
+// to add a foreign key
+// >  CREATE TABLE IF NOT EXISTS orders (
+//     order_id int(11),
+//     client_id int(11) not null,
+//     PRIMARY KEY(order_id),
+//     FOREIGN KEY(client_id) REFERENCES clients(id)
+// ) ENGINE = innoDB;
+
+// to add constraint name and on update and delete
+// >  ALTER TABLE orders
+//     ADD CONSTRAINT ordering
+//     FOREIGN KEY(client_id) REFERENCES clients(id)
+//     ON UPDATE CASCADE
+//     ON DELETE CASCADE; // SET NULL || NO ACTION || RESTRICT
+
+// to add many to many relation
+// > CREATE TABLE shopmember (
+//     client int not null,
+//     shop int not null,
+//     primary key (client, shop),
+//     CONSTRAINT cons_clients FOREIGN KEY (client) REFERENCES clients (id) ON DELETE CASCADE ON UPDATE CASCADE,
+//     CONSTRAINT cons_shop FOREIGN KEY (shop) REFERENCES clients (shop_id) ON DELETE CASCADE ON UPDATE CASCADE,
+// ) ENGINE = innoDB;
