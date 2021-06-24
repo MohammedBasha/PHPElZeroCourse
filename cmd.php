@@ -25,6 +25,8 @@
 // to use database
 // > use ecom;
 
+/************************************************************** */
+
 // to create table in database
 // >  CREATE TABLE IF NOT EXISTS students (id int(11), name varchar(255), email varchar(255));
 
@@ -74,6 +76,8 @@
 // to change the character set for table to utf8 or latin1
 // > ALTER TBALE tableName CONVERT TO CHARACTER SET utf8;
 
+/************************************************************** */
+
 // to add a constraint not null to an existing or new column
 // > ALTER TBALE tableName MODIFY columnName varchar(255) NOT NULL;
 // > ALTER TBALE tableName ADD columnName varchar(255) NOT NULL;
@@ -113,3 +117,65 @@
 //     CONSTRAINT cons_clients FOREIGN KEY (client) REFERENCES clients (id) ON DELETE CASCADE ON UPDATE CASCADE,
 //     CONSTRAINT cons_shop FOREIGN KEY (shop) REFERENCES clients (shop_id) ON DELETE CASCADE ON UPDATE CASCADE,
 // ) ENGINE = innoDB;
+
+/************************************************************** */
+
+// to select the first 3 characters in a string from a column
+// > SELECT LEFT(columnName, 3) FROM tableName;
+
+// to select the first or the last 3 characters from a column
+// > SELECT LEFT(columnName, 3) FROM tableName;
+// > SELECT RIGHT(columnName, 3) FROM tableName;
+
+// to select a string from the middle of the column, the position is 1 based index
+// > MID(columnName, position, length);
+// > SELECT MID(columnName, 2, 3);
+
+// to know the length of string
+// > SELECT LENGTH(columnName) AS aliasName FROM tableName; // counting the bytes of characters
+// > SELECT CHAR_LENGTH(columnName) AS aliasName FROM tableName; // counting the number of characters
+
+// to transform a string cases
+// > LOWER(columnName);
+// > LCASE(columnName);
+// > UPPER(columnName);
+// > UCASE(columnName);
+
+// ordering asc desc
+// SELECT columnName AS aliasName FROM tableName ORDER BY CHAR_LENGTH(columnName) ASC;
+// SELECT columnName AS aliasName FROM tableName ORDER BY CHAR_LENGTH(columnName) DESC;
+
+// Repeat string 3 times
+// > SELECT text, REPEAT(columnName, 3) AS aliasName FROM tableName;
+
+// Replace string 
+// > SELECT text, REPLACE(columnName, 'a', '@') AS aliasName FROM tableName;
+// > UPDATE tableName SET columnName = REPLACE(columnName, 'a', '@');
+
+// Reverse string
+// > SELECT text, REVERSE(columnName) AS aliasName FROM tableName;
+
+// concatenation
+// > CONCATE('First ', columnName, ' last')
+
+// concatenation with seperator
+// > CONCATE_WS(',', columnName, ' last')
+// > CONCATE_WS(',', CONCATE(' ', columnName), ' last')
+
+// to insert a string in column instead of another
+// INSERT (columnName, position, length, 'string');
+
+// trim text with trim()
+// > TRIM(LEADING | TRAILING | BOTH [Remove String] FROM [columnName]);
+// >> if the methods didn't be specified the 'both' will be used
+// >> the removed string if not written, the space will be removed
+// > TRIM(LEADING '@' FROM email);
+
+// trim spaces only from left or right
+// LTRIM(columnName);
+// RTRIM(columnName);
+
+// adding padding string in the column string
+// LPAD(columnName, length, paddedString);
+// RPAD(columnName, length, paddedString);
+// > LPAD(columnName, 5, '@');
