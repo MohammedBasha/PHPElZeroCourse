@@ -187,3 +187,45 @@
 // > TRUNCATE(numer, decimal);
 // > POW => POWER(number, power);
 // > MOD(number, mod);
+
+// Date && Time functions:
+// > CURTIME() => CURRENT_TIME() => CURRENT_TIME;
+// > CURDATE() => CURRENT_DATE() => CURRENT_DATE;
+// > NOW() => CURRENT_TIMESTAMP() => CURRENT_TIMESTAMP;
+
+// > DAYNAME(date);
+// > DAYOFMONTH(date) => DAY();
+// > DAYOFWEEK(date);
+// > DAYOFYEAR(date);
+
+// > MONTH(date);
+// > MONTHnAME(date);
+// > HOUR(date);
+// > MINUTE(date);
+
+// > DATEDIFF(date1, date2);
+
+// > LAST_DAY(date); // last day in the month
+// unit Value => https://www.tutorialspoint.com/mysql/mysql-date-time-functions.htm
+// > DAT_ADD(date, INTERVAL experission Timeunit);
+// > DAT_ADD(date, INTERVAL 3 MONTH);
+// > DAT_ADD(date, INTERVAL 10 DAY);
+// > DATE_SUB(date, INTERVAL experission Timeunit);
+
+// Comparison functions:
+// > SELECT * FROM tableName WHERE columnName BETWEEN 2 AND 6;
+// > SELECT * FROM tableName WHERE columnName NOT BETWEEN 2 AND 6;
+
+// > SELECT * FROM tableName WHERE columnName IN (1, 2, 'mohammed');
+// > SELECT * FROM tableName WHERE columnName NOT IN (1, 2, 'mohammed');
+
+// > SELECT * FROM tableName WHERE columnName LIKE '%ohammed'; // 0 or more characers
+// > SELECT * FROM tableName WHERE columnName NOT LIKE '_ohammed'; // 1 character
+
+// > SELECT * FROM tableName WHERE columnName = 1;
+// > SELECT * FROM tableName WHERE columnName != 1;
+// > SELECT * FROM tableName WHERE columnName <> 1;
+// > SELECT * FROM tableName WHERE columnName > 1;
+// > SELECT * FROM tableName WHERE columnName >= 1;
+// > SELECT * FROM tableName WHERE columnName < 1;
+// > SELECT * FROM tableName WHERE columnName <= 1;
