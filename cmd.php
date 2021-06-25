@@ -234,3 +234,22 @@
 // > SELECT * FROM tableName WHERE columnName = 1 OR columnName = 2; // ||
 // > SELECT * FROM tableName WHERE columnName = 1 XOR columnName = 2; // the first one and not the second one
 // > SELECT * FROM tableName WHERE NOT columnName = 1; // !
+
+// Control Flow:
+// > SELECT * FROM tableName IF(columnName < 5, 'true', 'false');
+
+// > SELECT * FROM tableName
+// CASE
+//     WHEN columnName = 10 THEN 'ok'
+//     WHEN columnName = 5 THEN 'ok5'
+//     WHEN columnName = 100 THEN 'ok1'
+//     ELSE 'default message'
+// END AS aliasName;
+
+// > SELECT * FROM tableName
+// CASE columnName
+//     WHEN 10 THEN 'ok'
+//     WHEN 5 THEN 'ok5'
+//     WHEN 100 THEN 'ok1'
+//     ELSE 'default message'
+// END AS aliasName;
