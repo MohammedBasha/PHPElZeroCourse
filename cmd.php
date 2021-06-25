@@ -253,3 +253,17 @@
 //     WHEN 100 THEN 'ok1'
 //     ELSE 'default message'
 // END AS aliasName;
+
+// Information functions:
+// > SELECT USER() => SESSION_USER() => SYSTEM_USER(); // showing the user
+// > SELECT VERSION(); // showing the version f the DB
+// > SELECT DATABASE(); // to know tha database name
+// > SELECT CHARSET(USER()); // showing the character set of the user
+// > SELECT CHARSET(CONVERT(USER() USING latin1)); // to convert the character set of the user to latin1 instead of utf8
+// > SELECT CONNECTION_ID(); // get the connection id
+
+// GROUP BY, ORDER BY and HAVING:
+// > SELECT * FROM tableName ORDER BY columnName, columnName;
+// > SELECT * FROM tableName ORDER BY columnName, columnName DESC;
+// > SELECT columnName, SUM(columnName) FROM tableName GROUP BY columnName;
+// > SELECT columnName, COUNT(columnName) AS aliasName FROM tableName GROUP BY columnName HAVING aliasName > 1;
