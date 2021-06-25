@@ -96,7 +96,7 @@
 
 // to add a foreign key
 // >  CREATE TABLE IF NOT EXISTS orders (
-//     order_id int(11),
+//     order_id int(11) AUTO_INCREMENT,
 //     client_id int(11) not null,
 //     PRIMARY KEY(order_id),
 //     FOREIGN KEY(client_id) REFERENCES clients(id)
@@ -267,3 +267,14 @@
 // > SELECT * FROM tableName ORDER BY columnName, columnName DESC;
 // > SELECT columnName, SUM(columnName) FROM tableName GROUP BY columnName;
 // > SELECT columnName, COUNT(columnName) AS aliasName FROM tableName GROUP BY columnName HAVING aliasName > 1;
+
+// Alias:
+// > SELECT 
+//     u.user_id User_Id,
+//     u.user_name Username,
+//     l.lang_name Fav_Lang
+// FROM
+//     useres u,
+//     langs l
+// WHERE
+//     u.lang_id = l.lang_id;
