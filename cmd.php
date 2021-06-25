@@ -179,3 +179,11 @@
 // LPAD(columnName, length, paddedString);
 // RPAD(columnName, length, paddedString);
 // > LPAD(columnName, 5, '@');
+
+// numeric functions
+// > CEIL(numer);
+// > FLOOR(numer);
+// > ROUND(numer, decimal);
+// > TRUNCATE(numer, decimal);
+// > POW => POWER(number, power);
+// > MOD(number, mod);
