@@ -316,3 +316,9 @@
 //     langs l
 // ON
 //     u.lang_id = l.lang_id;
+
+// References:
+// MariaDB => https://mariadb.com/kb/en/
+// MySQL 8.0 Reference Manual => https://dev.mysql.com/doc/refman/8.0/en/
+// MySQL Tutorial => https://www.mysqltutorial.org/
+// SQL Fiddle >> testing and sharing SQL queries => http://sqlfiddle.com/
