@@ -278,3 +278,41 @@
 //     langs l
 // WHERE
 //     u.lang_id = l.lang_id;
+
+// Join:
+
+// INNER_JOIN = is the matching values between 2 tables
+// > SELECT 
+//     u.user_id User_Id,
+//     u.user_name Username,
+//     l.lang_name Fav_Lang
+// FROM
+//     useres u,
+// INNER_JOIN
+//     langs l
+// ON
+//     u.lang_id = l.lang_id;
+
+// LEFT_JOIN = the whole left table with only the matching values in the right table
+// > SELECT 
+//     u.user_id User_Id,
+//     u.user_name Username,
+//     l.lang_name Fav_Lang
+// FROM
+//     useres u,
+// LEFT_JOIN
+//     langs l
+// ON
+//     u.lang_id = l.lang_id;
+
+// RIGHT_JOIN = the whole right table with only the matching values in the left table
+// > SELECT 
+//     u.user_id User_Id,
+//     u.user_name Username,
+//     l.lang_name Fav_Lang
+// FROM
+//     useres u,
+// RIGHT_JOIN
+//     langs l
+// ON
+//     u.lang_id = l.lang_id;
