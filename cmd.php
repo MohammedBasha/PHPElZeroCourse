@@ -229,3 +229,8 @@
 // > SELECT * FROM tableName WHERE columnName >= 1;
 // > SELECT * FROM tableName WHERE columnName < 1;
 // > SELECT * FROM tableName WHERE columnName <= 1;
+
+// > SELECT * FROM tableName WHERE columnName = 1 AND columnName = 2; // &&
+// > SELECT * FROM tableName WHERE columnName = 1 OR columnName = 2; // ||
+// > SELECT * FROM tableName WHERE columnName = 1 XOR columnName = 2; // the first one and not the second one
+// > SELECT * FROM tableName WHERE NOT columnName = 1; // !
