@@ -1,14 +1,17 @@
 <?php
 
-$dsn = 'mysql:host=localhost;dbname=ecom'; // Data source name
-$user = 'root'; // Database user
-$pass = ''; // Database password
-$options = [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
+/*
+ * PHP Tags:
+ * Full Tag: <?php ?>
+ * Short Tag: <? ?>
+ * ASP-Like tag: <% %>
+ * 
+ *   */
 
-try {
-    $db = new PDO ($dsn, $user, $pass, $options); // Start a new connection with PDO class
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo 'You\'re connected';
-} catch(PDOException $e) {
-    echo 'Failed connection due to ' . $e->getMessage();
-}
+ // if the folder have index.html and index.php files, the index.html takes precedence
+
+ // echo is much more like a keyword than a function
+
+ echo 'String 1';
+
+ print('String 2');
