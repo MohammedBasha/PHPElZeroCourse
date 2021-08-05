@@ -15,21 +15,26 @@ echo '<pre>';
 echo '</pre>';
 
 echo '<pre>';
-print_r($salaries);
+// print_r($salaries);
 echo '</pre>';
 
-for($i = 0, $ii = count($salaries); $i < $ii; $i++) {
-    $salaries[$i] += ($salaries[$i] * .1);
-}
+// for($i = 0, $ii = count($salaries); $i < $ii; $i++) {
+//     $salaries[$i] += ($salaries[$i] * .1);
+// }
 
-for($i = 0, $ii = count($salaries); $i < $ii; $i++) {
-    echo '<p>The employee No (' . ($i + 1) . ') has a salry = ' . $salaries[$i] . '</p>';
-}
+// for($i = 0, $ii = count($salaries); $i < $ii; $i++) {
+//     echo '<p>The employee No (' . ($i + 1) . ') has a salry = ' . $salaries[$i] . '</p>';
+// }
 
-for($i = 0, $ii = count($salaries), $total = 0; $i < $ii; $i++) {
-    $total += $salaries[$i];
-}
-echo '<p>The total salaries = ' . $total . '</p>';
+// for($i = 0, $ii = count($salaries), $total = 0; $i < $ii; $i++) {
+//     $total += $salaries[$i];
+// }
+// echo '<p>The total salaries = ' . $total . '</p>';
 echo '<pre>';
-print_r($salaries);
+// print_r($salaries);
 echo '</pre>';
+
+$input = array("Neo", "Morpheus", "Trinity", "Cypher", "Tank");
+$rand_keys = array_rand($input, 2);
+echo $input[$rand_keys[0]] . "\n";
+echo $input[$rand_keys[1]] . "\n";
