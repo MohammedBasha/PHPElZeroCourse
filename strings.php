@@ -66,5 +66,3 @@
     </html>
 
     MyText2;
-
-    echo PHP_EOL;
