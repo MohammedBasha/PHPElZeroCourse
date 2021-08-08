@@ -1,109 +1,123 @@
 <?php
 
 /*
- * Instantiation: is creating an object of a Class
- * $ahmed or $mohammed is an instance of the Class Student
- *
+ * Inheritance: is a relationship between classes (parent (Trainer) and child (WebDevelopmentTrainer)) - the child will inherit from parent
  * 
- * Constructors:
- * A method that's usually public, but id you defined it as private the new Objects won't run this method
- * When creating a new object of the class you can ommit the (), unless you want to pass an arguments to the _construct() function.
+ * Association: The First Class (WebDevelopmentTrainer) is using the second Class (Book) to finish a process (training) - could be used or not - no one have the other or dependent on the other
  * 
- *
- * Destructors
+ * Aggregation: a controler class (TrainingProgram) that sets some controls for another class (Student), so if any of those disappeared, nothing happens to any of them - each one is dependent on itself
  * 
- * Access modifiers - Visibility:
- *     public: The property or method defined as public could be accessed inside or outside the class from any object of this class.
- *     
- *     private: The property or method can be accessed only inside the main class
- *              When setting a property as private, the only way to access it is through the main class like with setters and getters, to enforce the user not to set the property directly and type any unvalid input
- *     
- *     protected: The property or method can be accessed in the class or the inherited classes.
+ * Composition: a tide relationship between two classes (dependent on each other), if one disappeared the second will be affected
  * 
- * Inheritance:
- * 
- * self::property : it's calling the parent class
- * static::propery : it's calling the running Class
- * https://www.php.net/manual/en/language.oop5.late-static-bindings.php
- * 
- * static keyword: its not used in the object instantiated
- * 
-*/
+ */
 
-class Student
-{ // Starting class context
-    protected $name;
-    protected $age;
-    protected $level;
-    protected $score;
-    protected $subjects = [
-        'Arabic'    => 0,
-        'English'   => 0,
-        'Math'      => 0,
-        'Science'   => 0
-    ];
-    protected $minScore = 150;
-    protected $maxScore = 300;
+/**
+ * 
+ * Objects regards this lecture:
+ * 1- Trainer
+ * 2- WebDevelopmentTrainer
+ * 3- Book
+ * 4- Student
+ * 5- TrainingProgram
+ */
+
+/*
+ * Requirements:
+ * 1- The WebDevelopmentTrainer is a type of Trainer (Inheritance)
+ * 2- The WebDevelopmentTrainer uses a book as a reference (Association)
+ * 3- The TrainingProgram can have many students (Aggregation)
+ * 4- The WebDevelopmentTrainer is responsible for ensuring the success of the trainingProgram (Composition)
+ * 5- The WebDevelopmentTrainer's salary will be raised if the training rate is good enough (Composition)
+ */
+
+class Trainer // requirement 1
+{ // Parent
+    public $name; // prototype 
+    public $salary; // prototype 
+    public $age; // prototype 
+    public $rate; // according to the requirement 4 && 5
     
-    const MIN_AGE = 12;
-    const MAX_AGE = 21;
-    
-    public function __construct($name, $age) {
-         $this->name = $name;
-         $this->age = $age;
-         echo 'Starting the parent constructor class <br> ';
-         echo 'Static From Parent Class ' . static::MIN_AGE . ' ' . static::MAX_AGE . '<br>'; // static will be called from the used class that call it, if it is override the constants in the parent
-         echo 'Self From Parent Class ' . self::MIN_AGE . ' ' . self::MAX_AGE . '<br>'; // self will be used from the parent class
-         echo 'End the parent constructor class <br> ';
-         echo '<br>The called class is ' . get_called_class() . '<br>'; // to know the called class
-         echo '<br>The called class is ' . __CLASS__ . '<br>'; // to know the called class
-     }
-
-    public function setName($name) {
-        $this->name = $this->filterName($name);
-    }
-
-    protected function getName() {
-        return $this->name;
-    }
-
-    private function filterName($name) {
-        return ucwords(substr($name, 0, 12));
-    }
-
-    protected function setLevel($level) {
-        $level = abs(filter_var($level, FILTER_SANITIZE_NUMBER_INT));
-        if ($level < 1 || $level > 12) {
-            throw new Exception("Sorry the level can't be less than 1 or greater than 12");
-        } else {
-            $this->level = $level;
-        }
-    }
-
-    protected function getLevel() {
-        return $this->level;
-    }
-} // Ending class context
-
-$ahmed = new Student('Mohammed', 33);
-// echo $ahmed->name; // Accessing the property name and print it
-//$ahmed->setLevel('-5');
-// echo $ahmed->getLevel();
-//$ahmed->setName('mohammed ahmed ebrahem');
-// echo $ahmed->getName();
-//echo $ahmed->maxScore;
-
-class Grade1Student extends Student
-{
-    const MIN_AGE = 13;
-    const MAX_AGE = 25;
-    public function __construct($name, $age) {
-        echo 'Line 88 inherited from Parent in CHild ';
-        parent::__construct($name, $age); // to inherit the parent's class constructor function
+    public function isAGoodTrainer() { // prototype 
+        
     }
 }
 
-$ali = new Grade1Student('Mohammed ahmed', 15);
-echo 'From $ali variable ' . $ali::MIN_AGE . ' ' . $ali::MAX_AGE . '<br>';
-echo 'From Student Class ' . Student::MIN_AGE . ' ' . Student::MAX_AGE . '<br>';
-echo 'From Grade1Stutend CLass ' . Grade1Student::MIN_AGE . ' ' . Grade1Student::MAX_AGE . '<br>';
+class WebDevelopmentTrainer extends Trainer // requirement 1 && requirement 2 && requirement 4
+{ // Child - Inheritance relationship with the Parent (Trainer)
+
+    // Composition relationship with trainingProgram Class
+    // Ensuring the success of the trainingProgram Class and will be affected if not
+    
+    public function isTheTrainerQualified() { // prototype 
+        // if he is qualified to finish this training
+    }
+    
+    public function addBook(Book $book) { // accepts Object of the type Book
+        // according to the requirement 2
+        // The WebDevelopmentTrainer can add a book as a tool for training but won't be the only tool (It's optional) - it can disappear without any effect
+        // and the WebDevelopmentTrainer Class is not the parent of the Book Class
+        // and the Book Class is not the parent (or owner) of the WebDevelopmentTrainer Class - also it can disappear without any effect - has its own life cycle
+        
+        
+    }
+    
+    public function paySalary() { // according to the requirement 4 && 5
+        if($this->rate === true) {
+            echo 'You will be paid';
+        }
+    }
+}
+
+class Book // requirement 2
+{ // Association relationship with the (WebDevelopmentTrainer) class - could be used or not
+    public $title; // prototype 
+    public $author; // prototype 
+    public $isbn; // prototype 
+    public function canBeBorrowed() { // prototype 
+        
+    }
+    
+    public static function isBorrowedBy(Trainer $trainer) { // accepts Object of the type Trainer
+        // according to the requirement 2
+        // Any Book Class can be borrowed by the Trainer Class or not borrowed at all
+        // it can disappear without any effect - has its own life cycle
+        return $trainer->name;
+    }
+}
+
+class TrainingProgram // requirement 3 && requirement 4
+{
+    // Aggregation relationship with Student Class
+    // The TrainingProgram Class could have more than Student Class
+    // If the Student Class disappeared - no thing will happened to TrainingProgram Class
+    
+    // Composition relationship with WebDevelopmentTrainer Class
+    // TrainingProgram Class can't proceed without WebDevelopmentTrainer Class
+    
+    public $title; // prototype 
+    public $studentList; // prototype 
+    public $trainer; // according to the requirement 4 && 5
+    
+    public function showStudentsList() { // prototype 
+        return $this->studentList;
+    }
+    
+    public function addStudent(Student $student) { // requirement 3
+    // accepts Object of the type Student
+        $this->studentList[] = $student;
+    }
+    
+    public function isTrainerGood(Trainer $trainer) { // according to the requirement 4 && 5
+        // accepts Object of the type Trainer
+        $this->rate = true;
+    }
+}
+
+class Student // requirement 3
+{
+    // Aggregation relationship with TrainingProgram Class
+    // Student Class could have more than TrainingProgram Class
+    // If the TrainingProgram Class disappeared - no thing will happened to Student Class
+    public $name; // prototype 
+    public $age; // prototype 
+}
