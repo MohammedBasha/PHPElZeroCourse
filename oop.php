@@ -1,123 +1,108 @@
 <?php
 
 /*
- * Inheritance: is a relationship between classes (parent (Trainer) and child (WebDevelopmentTrainer)) - the child will inherit from parent
+ * In PHP you can inherit from one class only unlike other Programing Languages that support Multiple inheritance
  * 
- * Association: The First Class (WebDevelopmentTrainer) is using the second Class (Book) to finish a process (training) - could be used or not - no one have the other or dependent on the other
+ * Abstract Classes: a class that can't be used to instantiate an object from it, so it's used to be inherited from other classes
+ * - it's not required to abstract all the method in this class
+ * - You can use public or protected access modifires, but you can't use private
  * 
- * Aggregation: a controler class (TrainingProgram) that sets some controls for another class (Student), so if any of those disappeared, nothing happens to any of them - each one is dependent on itself
- * 
- * Composition: a tide relationship between two classes (dependent on each other), if one disappeared the second will be affected
- * 
+ * Intefaces: pure prototypes
+ * - only have methods with optionally arguments
+ * - all the methods must be abstracted (without body)
+ * - You can use only public access modifire
+ * - you can implement more than one interface on the classes
  */
 
-/**
- * 
- * Objects regards this lecture:
- * 1- Trainer
- * 2- WebDevelopmentTrainer
- * 3- Book
- * 4- Student
- * 5- TrainingProgram
- */
-
-/*
- * Requirements:
- * 1- The WebDevelopmentTrainer is a type of Trainer (Inheritance)
- * 2- The WebDevelopmentTrainer uses a book as a reference (Association)
- * 3- The TrainingProgram can have many students (Aggregation)
- * 4- The WebDevelopmentTrainer is responsible for ensuring the success of the trainingProgram (Composition)
- * 5- The WebDevelopmentTrainer's salary will be raised if the training rate is good enough (Composition)
- */
-
-class Trainer // requirement 1
-{ // Parent
-    public $name; // prototype 
-    public $salary; // prototype 
-    public $age; // prototype 
-    public $rate; // according to the requirement 4 && 5
+abstract class Employee
+{ // Can't create an object from it - i's for inheritance only
+    // General information for all employees
+    public $firstName;
+    public $lastName;
+    public $age;
+    public $address;
     
-    public function isAGoodTrainer() { // prototype 
-        
+    public $salary;
+    public $tax;
+    public $overTime;
+    public $overTimeRate;
+    public $absent;
+    public $absentRate;
+    
+    // Starting the Salary methods that will be inherited to all the classes extending this class
+    
+    public function getOverTime() {
+        return $this->overTime * $this->overTimeRate;
     }
+    
+    public function getAbbsent() {
+        return $this->absent * $this->absentRate;
+    }
+    
+    public function getSalary() {
+        return $this->salary - ($this->salary * $this->tax);
+    }
+    
+    //  This showTotalSalary() method will vary depending on each Class, so it will be defined here as an abstracted methods without body, then each class will define it and use it the way it should
+    // It can be public or protected, but can't be private (private can't be inherited)
+    abstract protected function showTotalSalary();
+    
+    // Ending the Salary methods
 }
 
-class WebDevelopmentTrainer extends Trainer // requirement 1 && requirement 2 && requirement 4
-{ // Child - Inheritance relationship with the Parent (Trainer)
-
-    // Composition relationship with trainingProgram Class
-    // Ensuring the success of the trainingProgram Class and will be affected if not
-    
-    public function isTheTrainerQualified() { // prototype 
-        // if he is qualified to finish this training
-    }
-    
-    public function addBook(Book $book) { // accepts Object of the type Book
-        // according to the requirement 2
-        // The WebDevelopmentTrainer can add a book as a tool for training but won't be the only tool (It's optional) - it can disappear without any effect
-        // and the WebDevelopmentTrainer Class is not the parent of the Book Class
-        // and the Book Class is not the parent (or owner) of the WebDevelopmentTrainer Class - also it can disappear without any effect - has its own life cycle
-        
-        
-    }
-    
-    public function paySalary() { // according to the requirement 4 && 5
-        if($this->rate === true) {
-            echo 'You will be paid';
-        }
-    }
-}
-
-class Book // requirement 2
-{ // Association relationship with the (WebDevelopmentTrainer) class - could be used or not
-    public $title; // prototype 
-    public $author; // prototype 
-    public $isbn; // prototype 
-    public function canBeBorrowed() { // prototype 
-        
-    }
-    
-    public static function isBorrowedBy(Trainer $trainer) { // accepts Object of the type Trainer
-        // according to the requirement 2
-        // Any Book Class can be borrowed by the Trainer Class or not borrowed at all
-        // it can disappear without any effect - has its own life cycle
-        return $trainer->name;
-    }
-}
-
-class TrainingProgram // requirement 3 && requirement 4
+interface EmployeeInterface
 {
-    // Aggregation relationship with Student Class
-    // The TrainingProgram Class could have more than Student Class
-    // If the Student Class disappeared - no thing will happened to TrainingProgram Class
+    public function showAddress();
+}
+
+class Manager extends Employee implements EmployeeInterface
+{
+    public $audits; // this property will be used in the salary methods, so the salary methods will be different in this class from the other classes
+    public $auditRate = 100; // this property will be used in the salary methods, so the salary methods will be different in this class from the other classes
     
-    // Composition relationship with WebDevelopmentTrainer Class
-    // TrainingProgram Class can't proceed without WebDevelopmentTrainer Class
-    
-    public $title; // prototype 
-    public $studentList; // prototype 
-    public $trainer; // according to the requirement 4 && 5
-    
-    public function showStudentsList() { // prototype 
-        return $this->studentList;
+    public function showTotalSalary() { // This is an abstracted method defined in the abstarct class
+        return $this->getSalary() + $this->getOverTime() - $this->getAbbsent() + ($this->audits * $this->auditRate);
     }
     
-    public function addStudent(Student $student) { // requirement 3
-    // accepts Object of the type Student
-        $this->studentList[] = $student;
-    }
-    
-    public function isTrainerGood(Trainer $trainer) { // according to the requirement 4 && 5
-        // accepts Object of the type Trainer
-        $this->rate = true;
+    public function showAddress() {
+        return $this->address;
     }
 }
 
-class Student // requirement 3
+class SuperVisor extends Employee implements EmployeeInterface
 {
-    // Aggregation relationship with TrainingProgram Class
-    // Student Class could have more than TrainingProgram Class
-    // If the TrainingProgram Class disappeared - no thing will happened to Student Class
-    public $name; // prototype 
-    public $age; // prototype 
+    public $successfullProjects; // this property will be used in the salary methods, so the salary methods will be different in this class from the other classes
+    public $successfullProjectRate = 1000; // this property will be used in the salary methods, so the salary methods will be different in this class from the other classes
+    
+    public function showTotalSalary() { // This is an abstracted method defined in the abstarct class
+        return $this->getSalary() + $this->getOverTime() - $this->getAbbsent() + ($this->successfullProjects * $this->successfullProjectRate);
+    }
+    
+    public function showAddress() {
+        return $this->address;
+    }
 }
+
+class Worker extends Employee
+{
+    public $bonus = 100; // this property will be used in the salary methods, so the salary methods will be different in this class from the other classes
+    
+    public function showTotalSalary() { // This is an abstracted method defined in the abstarct class
+        return $this->getSalary() + $this->getOverTime() - $this->getAbbsent() + $this->bonus;
+    }
+}
+
+$mohammed = new Manager();
+
+$mohammed->salary = 5000;
+$mohammed->tax = .01;
+$mohammed->overTime = 30;
+$mohammed->overTimeRate = 15;
+$mohammed->absent = 2;
+$mohammed->absentRate = 75;
+$mohammed->audits = 10;
+
+echo $mohammed->getOverTime() . ' L.E <br>';
+echo $mohammed->getAbbsent() . ' L.E <br>';
+echo $mohammed->getSalary() . ' L.E <br>';
+echo $mohammed->showTotalSalary() . ' L.E <br>';
