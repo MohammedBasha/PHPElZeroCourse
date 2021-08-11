@@ -12,6 +12,8 @@
  *  - Problem Solving: to resolve the name collisions (like same classes or functions)
  * 
  * 2- Affected types by namespaces are traits, classes, interfaces, functions, and constants.
+ *  - In the case (functions and constants): it will look for the global scope.
+ *  - In the case (traits, classes, and interfaces): it will look for the local scope.
  * 
  * 3- Defining namespaces using the namespace keyword.
  *  - YOU MUST define the namespace in the very beginning of any php file (even before any HTML code).
@@ -25,6 +27,10 @@
  * 6- Combining global, non-namespaced, code with namespaced code.
  * 
  * 7- Understanding how namespace are interpreted.
+ *  - There are 3  types of naming namespaces:
+ *      1- unqualified names TestController
+ *      2- Qualified, prefixed names Controllers\TestController
+ *      3- Fully qualified, prefixed with global operator \Main\Controllers\TestController
  * 
  * 8- Accessing global functions, classes .. etc
  * 
