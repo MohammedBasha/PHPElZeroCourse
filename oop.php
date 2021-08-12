@@ -7,4 +7,5 @@
 //include 'magic_methods_1.php';
 //include 'magic_methods_2.php';
 //include 'namespaces_1.php';
-include 'namespaces_2.php';
+//include 'namespaces_2.php';
+include 'super_globals.php';
