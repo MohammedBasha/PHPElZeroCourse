@@ -16,13 +16,15 @@
  * $_POST: It's the data sent to server with post method
  * - https://www.php.net/manual/en/book.filter.php
  * - https://www.php.net/manual/en/book.ctype.php
- * - firefoxegy@gmail.com
+ * - sent tasks to Mohammed at firefoxegy@gmail.com
  * 
  * $_REQUEST:
  * 
  * $_SESSION: a way to create a stateful application
  * - you can put any content in the session even objects but not resources
  * - because a serialization is done to all the data
+ * - https://www.php.net/manual/en/book.session
+ * - SESSION LOCKING: session locking means that the session is not available for all files for reading and writing - we use session_write_close() with that and the explaination in session.php file.
  * 
  * $_COOKIE:
  * 
@@ -33,10 +35,5 @@
  * $_ENV:
  * 
  */
-session_start();
-echo sys_get_temp_dir() . '<br>'; // This prints the system temporary directory
-echo session_save_path() . '<br>'; // This prints the saved session's directory
-echo session_id() . '<br>'; // This prints the session ID
-echo 'sess_' . session_id() . '<br>'; // This prints the session file
-$_SESSION['welcome'] = 'Welcome to our website ';
-var_dump($_SESSION);
+
+require './session.php';
