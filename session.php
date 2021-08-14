@@ -42,8 +42,6 @@ $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES); // 24 bytes
 // Encrypt
 $ciphertext = sodium_crypto_secretbox($msg, $nonce, $key);
 
-echo $ciphertext . '<br>';
-
 // Decrypt
 $plaintext = sodium_crypto_secretbox_open($ciphertext, $nonce, $key);
 

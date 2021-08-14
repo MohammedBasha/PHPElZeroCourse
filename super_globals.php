@@ -36,4 +36,4 @@
  * 
  */
 
-require './session.php';
+//require './session.php';
