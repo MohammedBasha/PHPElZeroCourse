@@ -133,8 +133,9 @@ class AppSessionHandler extends SessionHandler
         $data = parent::read($id);
 
         if (!$data) {
-            return "";
+            return ""; // Returning Empty String if the session not found
         } else {
+            // Returning  the decrypted session
             return $this->decrypt($data, $this->sessionCipherKey);
         }
     }
@@ -142,32 +143,35 @@ class AppSessionHandler extends SessionHandler
     // Writing the encrypted data
     public function write($id, $data)
     {
+        // Writing encrypted session
         $data = $this->encrypt($data, $this->sessionCipherKey);
 
         return parent::write($id, $data);
     }
 
+    // create a key in the _SESSION to save the start time
     private function sessionStartTime() {
         if (!isset($this->sessionStartTime)) {
-            // create a key in the _SESSION to save the start time
             $this->sessionStartTime = time();
         }
         return true;
     }
 
+    // Checking the session's time-to-live in Seconds, if it exceeded, then renew the session with new ID
     private function checkSessionValidity() {
-        // Checking the session's time-to-live in Seconds
         if ((time() - $this->sessionStartTime) > ($this->ttl * 60)) {
             $this->renewSession();
         }
         return true;
     }
 
+    // Renew the starting time of the session and regenerate a new session ID
     private function renewSession() {
         $this->sessionStartTime = time();
         return session_regenerate_id(true);
     }
 
+    // Start the session, save the start time and then check the Validity
     public function start() {
         if ('' === session_id()) {
             if (session_start()) {
@@ -181,6 +185,7 @@ class AppSessionHandler extends SessionHandler
 $session = new AppSessionHandler();
 $session->start();
 //$session->msg = 'Welcome MSG!!!';
+echo $session->msg;
 echo '<pre>';
 var_dump($_SESSION);
 echo '</pre>';
