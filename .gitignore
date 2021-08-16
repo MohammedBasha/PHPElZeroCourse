@@ -1,0 +1,19 @@
+/config.dest
+/.vscode
+/node_modules
+/.grunt
+/.idea
+.idea
+/Gruntfile.js
+/package.json
+/package-lock.json
+/grunt-config.json
+/sessions
+/nbproject
+
+.DS_Store
+# .gitignore
+/nbproject/private/
+
+
+.project

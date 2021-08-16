@@ -76,15 +76,23 @@ class AppSessionHandler extends SessionHandler
         // concatenating the $sessionCipherKey with the $salt data
         $data00 = $password.$salt;
         $hash = array();
+
+        // Generate a hash value with sha256 algorithm
         $hash[0] = hash('sha256', $data00, true);
         $result = $hash[0];
         for ($i = 1; $i < $rounds; $i++) {
+            // the hashed data will be a mix of the $data00 with the $hash array items
             $hash[$i] = hash('sha256', $hash[$i - 1].$data00, true);
             $result .= $hash[$i];
         }
+
+        // Extract the first 32 bytes of the 48 bytes in $result variable to generate a passphrase for the openssl_decrypt() function
         $key = substr($result, 0, 32);
+
+        // Extract the last 16 bytes of the 48 bytes in $result variable to generate the Initialization Vector
         $iv  = substr($result, 32,16);
 
+        // Returning the decrypted data
         return openssl_decrypt($ct, 'AES-256-CBC', $key, true, $iv);
     }
 
