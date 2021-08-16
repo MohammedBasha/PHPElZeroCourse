@@ -1,55 +1,38 @@
 <?php
 
+// This custom session handler is based on Example #1 in the page below:
+// https://www.php.net/manual/en/class.sessionhandler.php
+
 // Defining a constant to the new saved path for the sessions
-define('SESSION_SAVED_PATH', dirname(realpath(__FILE__)) . DIRECTORY_SEPARATOR . 'sessions');
+define('SESSION_SAVE_PATH', dirname(realpath(__FILE__)) . DIRECTORY_SEPARATOR . 'sessions');
 
 class AppSessionHandler extends SessionHandler
 {
-    private $sessionName = 'MYAPPSESS'; // Session Name
+    private $sessionName = 'MYAPPSESS'; // Custom Session Name
     private $sessionMaxLifeTime = 0; // Session Life Time
     private $sessionSSL = false; // Session Secure Connection
     private $sessionHTTPOnly = true; // Session HTTP
     private $sessionPath = '/'; // Session Path
     private $sessionDomain = '127.0.0.1'; // Session Domain
-    private $sessionSavePath = SESSION_SAVED_PATH; // Session Saved Path
-    private $sessionCipheredData;
-    private $sessionPlainedData;
-    
-    private function sessionKeyBytes() { // returning Key Bytes
-        return random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
-    }
-    
-    private function sessionNonceBytes() { // returning Nonce Bytes
-        return random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-    }
-    
-    private function cipherData($data) { // Encryoting the text
-        $this->sessionCipheredData = sodium_crypto_secretbox(
-                    $data,
-                    $this->sessionNonceBytes(),
-                    $this->sessionKeyBytes()
-                    );
-        return $this->sessionCipheredData;
-    }
-    
-    private function plainData() { // Decrypting the text
-        $this->sessionPlainedData = sodium_crypto_secretbox_open(
-                    $this->sessionCipheredData,
-                    $this->sessionNonceBytes(),
-                    $this->sessionKeyBytes()
-                    );
-        return $this->sessionPlainedData;
-    }
-    
+    private $sessionSavePath = SESSION_SAVE_PATH; // Session Saved Path
+
+    private $sessionCipherKey = 'WYCRYPT0K3Y@2016';
+
+    private $ttl = 1; // Minutes
+
     public function __construct() {
         // Starting the instantiation by resetting these runtime configurations
         ini_set('session.use_cookies', 1);
         ini_set('session.use_only_cookies', 1);
         ini_set('session.use_trans_sid', 0);
         ini_set('session.save_handler', 'files');
-        
-        session_name($this->sessionName);
+
+        session_name($this->sessionName); // Changing the default name
+
+        // Changing the default save path
         session_save_path($this->sessionSavePath);
+
+        // Setting the cookie parameters
         session_set_cookie_params(
                 $this->sessionMaxLifeTime,
                 $this->sessionPath,
@@ -57,47 +40,139 @@ class AppSessionHandler extends SessionHandler
                 $this->sessionSSL,
                 $this->sessionHTTPOnly
         );
-        
-        session_set_save_handler($this, true); // Setting user-level session storage methods from this class
+
+        // Setting the user-level session storage methods from this class
+        session_set_save_handler($this, true);
     }
-    
+
+    // Checking if there's a key in _SESSION to return
     public function __get($key) {
-        return !empty($_SESSION[$key])? $_SESSION[$key] : false;
+        return false !== $_SESSION[$key]? $_SESSION[$key] : false;
     }
-    
+
+    // Setting a key and its value in _SESSION
     public function __set($key, $value) {
-        $_SESSION[$key] = $value;
+        return $_SESSION[$key] = $value;
     }
-    
+
+    // Checking if there's a key in _SESSION or not
     public function __isset($key) {
         return isset($_SESSION[$key])? true : false;
     }
-    
-    public function read($id) { // Reading the plained text
-        if (is_null(parent::read($id))) return $this->plainData();
-        return parent::read($id);
+
+    // Decrypting the Encrypted data
+    private function decrypt($edata, $password) {
+        // Decoding the encoded data with MIME base64
+        $data = base64_decode($edata);
+
+        // Extract the first 16 bytes of the given $data
+        $salt = substr($data, 0, 16);
+
+        // Extract the rest of of the given $data after the first 16 bytes
+        $ct = substr($data, 16);
+
+        $rounds = 3; // depends on key length
+
+        // concatenating the $sessionCipherKey with the $salt data
+        $data00 = $password.$salt;
+        $hash = array();
+        $hash[0] = hash('sha256', $data00, true);
+        $result = $hash[0];
+        for ($i = 1; $i < $rounds; $i++) {
+            $hash[$i] = hash('sha256', $hash[$i - 1].$data00, true);
+            $result .= $hash[$i];
+        }
+        $key = substr($result, 0, 32);
+        $iv  = substr($result, 32,16);
+
+        return openssl_decrypt($ct, 'AES-256-CBC', $key, true, $iv);
     }
-    
-    public function write($id, $data) { // writing ciphered text
-        return parent::write($id, $this->cipherData($data));
+
+    // Encrypting the data
+    private function encrypt($data, $password) {
+        // Set a random salt
+        // Generate a pseudo-random string of 16 bytes
+        $salt = openssl_random_pseudo_bytes(16);
+
+        // These variables for the salting
+        $salted = '';
+        $dx = '';
+
+        // Salt the key(32) and iv(16) = 48
+        // checking if the length of the $salted key is less than 48 bytes
+        while (strlen($salted) < 48) {
+            // Generate a hash value with sha256 algorithm
+            // the hashed data will be a mix of the $sessionCipherKey with the salting variables ($salted && $dx)
+            $dx = hash('sha256', $dx.$password.$salt, true);
+            $salted .= $dx;
+        }
+
+        // Extract the first 32 bytes of the 48 bytes in $salted variable to generate a passphrase for the openssl_encrypt() function
+        $key = substr($salted, 0, 32);
+
+        // Extract the last 16 bytes of the 48 bytes in $salted variable to generate the Initialization Vector
+        $iv  = substr($salted, 32,16);
+
+        $encrypted_data = openssl_encrypt($data, 'AES-256-CBC', $key, true, $iv);
+
+        // Returning encoded data with MIME base64 with the 48 bytes $salt string after encryption
+        return base64_encode($salt . $encrypted_data);
     }
-    
+
+    // Reading the decrypted data
+    public function read($id)
+    {
+        $data = parent::read($id);
+
+        if (!$data) {
+            return "";
+        } else {
+            return $this->decrypt($data, $this->sessionCipherKey);
+        }
+    }
+
+    // Writing the encrypted data
+    public function write($id, $data)
+    {
+        $data = $this->encrypt($data, $this->sessionCipherKey);
+
+        return parent::write($id, $data);
+    }
+
+    private function sessionStartTime() {
+        if (!isset($this->sessionStartTime)) {
+            // create a key in the _SESSION to save the start time
+            $this->sessionStartTime = time();
+        }
+        return true;
+    }
+
+    private function checkSessionValidity() {
+        // Checking the session's time-to-live in Seconds
+        if ((time() - $this->sessionStartTime) > ($this->ttl * 60)) {
+            $this->renewSession();
+        }
+        return true;
+    }
+
+    private function renewSession() {
+        $this->sessionStartTime = time();
+        return session_regenerate_id(true);
+    }
+
     public function start() {
         if ('' === session_id()) {
             if (session_start()) {
-                if (!isset($this->sessionStartTime)) {
-                    $this->sessionStartTime = time();
-                }
+                $this->sessionStartTime();
+                $this->checkSessionValidity();
             }
         }
     }
 }
 
 $session = new AppSessionHandler();
-
 $session->start();
-//$session->msg = 'Welcome to our website';
+//$session->msg = 'Welcome MSG!!!';
+echo '<pre>';
 var_dump($_SESSION);
-echo $session->msg;
-echo isset($session->msg)? 'found' : 'not';
-echo $session->sessionStartTime;
+echo '</pre>';

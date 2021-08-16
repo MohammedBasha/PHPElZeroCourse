@@ -24,7 +24,11 @@
  * - you can put any content in the session even objects but not resources
  * - because a serialization is done to all the data
  * - https://www.php.net/manual/en/book.session
- * - SESSION LOCKING: session locking means that the session is not available for all files for reading and writing - we use session_write_close() with that and the explaination in session.php file.
+ *
+ * - SESSION LOCKING:
+ * - Read on that in the last Note in this link below:
+ * - https://www.php.net/manual/en/session.examples.basic.php
+ * - https://www.php.net/manual/en/function.session-write-close.php
  * 
  * $_COOKIE:
  * 

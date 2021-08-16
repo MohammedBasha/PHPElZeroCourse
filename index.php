@@ -6,4 +6,6 @@
 // include 'strings.php';
 // include 'control_structure.php';
 // include 'array_functions.php';
-include 'oop.php';
+//include 'oop.php';
+//require 'session.php';
+require 'session_handler.php';

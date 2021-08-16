@@ -33,16 +33,16 @@
 // in the Session 31, Mohammed used mcrypt for encrypting data
 // I'll use Sodium library
 
-$msg = 'Welcome to our website!';
-
-// Generating an encryption key and a nonce
-$key   = random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES); // 256 bit
-$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES); // 24 bytes
-
-// Encrypt
-$ciphertext = sodium_crypto_secretbox($msg, $nonce, $key);
-
-// Decrypt
-$plaintext = sodium_crypto_secretbox_open($ciphertext, $nonce, $key);
-
-echo $plaintext === $msg ? 'Success' : 'Error';
+//$msg = 'Welcome to our website!';
+//
+//// Generating an encryption key and a nonce
+//$key   = random_bytes(SODIUM_CRYPTO_SECRETBOX_KEYBYTES); // 256 bit
+//$nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES); // 24 bytes
+//
+//// Encrypt
+//$ciphertext = sodium_crypto_secretbox($msg, $nonce, $key);
+//
+//// Decrypt
+//$plaintext = sodium_crypto_secretbox_open($ciphertext, $nonce, $key);
+//
+//echo $plaintext === $msg ? 'Success' : 'Error';
