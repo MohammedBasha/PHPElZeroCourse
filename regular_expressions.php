@@ -16,6 +16,10 @@
  * 
  * - Delimeters: the symbols that the pattern is put inside it like // or ##.
  * 
+ * Character Sets:
+ * Characters Ranges:
+ * Negation Meta Character - Negative Character Sets
+ * 
  */
 
 // Literal Characters Pattern
@@ -43,4 +47,29 @@
 // tab: \t
 // line return: \r \n \r\n
 // non-printable: \a fro bell and \v for vertical tab
+
+// Character Sets
+//$pattern = '/fl[o#a\]]t/'; // getting 1 character of the characters found between those []
+//$str = 'My flat rent is some how high, Iam now floating and flot fl#t fl]t';
+//preg_match_all($pattern, $str, $match); // returns all the matchs
+//echo '<pre>';
+//var_dump($match);
+//echo '</pre>';
+
+// Characters Ranges [a-z][A-Z][0-9]
+//$pattern = '/fl[a-z]t/'; // getting 1 character in that range
+//$str = 'My flat rent is some how high, Iam now floating and flot fl#t fl]t';
+//preg_match_all($pattern, $str, $match); // returns all the matchs
+//echo '<pre>';
+//var_dump($match);
+//echo '</pre>';
+
+// Negation Meta Character (^)- Negative Character Sets
+// Characters you don't want to be included in the search
+//$pattern = '/fl[^aoi\]]t/';
+//$str = 'My flat rent is some how high, Iam now floating and flot fl#t fl]t';
+//preg_match_all($pattern, $str, $match); // returns all the matchs
+//echo '<pre>';
+//var_dump($match);
+//echo '</pre>';
 
