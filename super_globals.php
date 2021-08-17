@@ -18,8 +18,6 @@
  * - https://www.php.net/manual/en/book.ctype.php
  * - sent tasks to Mohammed at firefoxegy@gmail.com
  * 
- * $_REQUEST:
- * 
  * $_SESSION: a way to create a stateful application
  * - you can put any content in the session even objects but not resources
  * - because a serialization is done to all the data
@@ -35,14 +33,17 @@
  * - https://stackoverflow.com/questions/8028957/how-to-fix-headers-already-sent-error-in-php
  * - https://stackoverflow.com/questions/8028957/how-to-fix-headers-already-sent-error-in-php/8028979#8028979
  * 
- * $_COOKIE:
+ * $_REQUEST: go to request.php file
+ * - An array can access some data that could be in the $_GET or $_POST
  * 
  * $_SERVER:
+ * - https://www.php.net/manual/en/reserved.variables.server
+ * - http://www.faqs.org/rfcs/rfc3875.html
+ * 
+ * $_COOKIE: go to cookie.php file
+ * 
+ * $_ENV: Environment variables
  * 
  * $_FILES:
  * 
- * $_ENV:
- * 
  */
-
-//require './session.php';
