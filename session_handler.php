@@ -18,7 +18,7 @@ class AppSessionHandler extends SessionHandler
 
     private $sessionCipherKey = 'WYCRYPT0K3Y@2016';
 
-    private $ttl = 1; // Minutes
+    private $ttl = 30; // Minutes
 
     public function __construct() {
         // Starting the instantiation by resetting these runtime configurations
@@ -149,6 +149,16 @@ class AppSessionHandler extends SessionHandler
         return parent::write($id, $data);
     }
 
+    // Start the session, save the start time and then check the Validity
+    public function start() {
+        if ('' === session_id()) {
+            if (session_start()) {
+                $this->sessionStartTime();
+                $this->checkSessionValidity();
+            }
+        }
+    }
+
     // create a key in the _SESSION to save the start time
     private function sessionStartTime() {
         if (!isset($this->sessionStartTime)) {
@@ -160,7 +170,8 @@ class AppSessionHandler extends SessionHandler
     // Checking the session's time-to-live in Seconds, if it exceeded, then renew the session with new ID
     private function checkSessionValidity() {
         if ((time() - $this->sessionStartTime) > ($this->ttl * 60)) {
-            $this->renewSession();
+            $this->renewSession(); // calling the renew session method
+            $this->generateFingerPrint(); // calling the generate finger print method
         }
         return true;
     }
@@ -170,22 +181,59 @@ class AppSessionHandler extends SessionHandler
         $this->sessionStartTime = time();
         return session_regenerate_id(true);
     }
-
-    // Start the session, save the start time and then check the Validity
-    public function start() {
-        if ('' === session_id()) {
-            if (session_start()) {
-                $this->sessionStartTime();
-                $this->checkSessionValidity();
-            }
+    
+    // Kill the session and cookie
+    public function kill() {
+        session_unset();
+        
+        // Reset the cookie with en empty value
+        setcookie(
+            $this->sessionName,
+            '',
+            time() - 1000,
+            $this->sessionPath,
+            $this->sessionDomain,
+            $this->sessionSSL,
+            $this->sessionHTTPOnly
+        );
+        
+        session_destroy();
+    }
+    
+    // Create a hashed finger print
+    private function generateFingerPrint() {
+        $userAgentID = $_SERVER['HTTP_USER_AGENT'];
+        $this->userCipherKey = openssl_random_pseudo_bytes(32);
+        $sessionID = session_id();
+        $this->fingerPrint = hash(
+            'sha256',
+            $userAgentID . $this->userCipherKey . $sessionID,
+            true
+        );
+    }
+    
+    // Checking if the user who is using this session is the same user everytime
+    public function isValidFingerPrint() {
+        // Checking if there's not a finger print for the use, then create hashed one
+        if (!isset($this->fingerPrint)) {
+            $this->generateFingerPrint();
         }
+        
+        // create a finger print for this user
+        $fingerPrint = hash(
+            'sha256',
+            $_SERVER['HTTP_USER_AGENT'] . $this->userCipherKey . session_id(),
+            true
+        );
+        
+        // Compare this finger print with the stored one to check the user
+        if ($fingerPrint === $this->fingerPrint) return true;
+        return false;
     }
 }
 
 $session = new AppSessionHandler();
 $session->start();
-//$session->msg = 'Welcome MSG!!!';
-echo $session->msg;
-echo '<pre>';
-var_dump($_SESSION);
-echo '</pre>';
+if (!$session->isValidFingerPrint()) {
+    $session->kill();
+}
