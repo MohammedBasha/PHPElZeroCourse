@@ -30,6 +30,11 @@
  * - https://www.php.net/manual/en/session.examples.basic.php
  * - https://www.php.net/manual/en/function.session-write-close.php
  * 
+ * - HEADERS ALREADY SENT problem:
+ * - If there is a space, new line before the starting PHP tags ( <?php) or BOM.
+ * - https://stackoverflow.com/questions/8028957/how-to-fix-headers-already-sent-error-in-php
+ * - https://stackoverflow.com/questions/8028957/how-to-fix-headers-already-sent-error-in-php/8028979#8028979
+ * 
  * $_COOKIE:
  * 
  * $_SERVER:

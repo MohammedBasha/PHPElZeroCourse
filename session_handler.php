@@ -212,7 +212,7 @@ class AppSessionHandler extends SessionHandler
         );
     }
     
-    // Checking if the user who is using this session is the same user everytime
+    // Checking if the user who is using this session is the same user every time
     public function isValidFingerPrint() {
         // Checking if there's not a finger print for the use, then create hashed one
         if (!isset($this->fingerPrint)) {
