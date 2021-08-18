@@ -50,6 +50,45 @@
  * 
  * Alternation: searching for all the grouped characters found between those alternatives (abc|def)
  * 
+ * Anchors: Zero character length
+ * ^ : Starting negation character - used to except characters in searching [^ab]
+ * $ : Ending negation character [ab$]
+ * \A : The same as ^ but working only in sngle line mode
+ * \Z : The same as $ but working only in sngle line mode
+ * \b : word boundries - applied for word characters
+ * \B : non word boundries - applied for non word characters 
+ * 
+ * Modifiers:
+ * - https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
+ * g : global in the whole string
+ * i : case-insensitive
+ * m : multiline
+ * 
+ * Backreferences: 
+ * 
+ * Non caputring group: <(?:h1|em)>[a-zA-Z ]+<\/(?:h1|em)>
+ * 
+ * Find and replace: 
+ * 
+ * Look-around assertions: working in capturing group
+ * - Lookahead assertions: /str(?=ing|ategy)/ 
+ *  - This ?= means positive lookahead
+ *  - This ?! means negative lookahead
+ * - Lookbehind assertions: (?<=text)
+ *  - This ?<= means positive lookbehind
+ *  - This ?<! means negative lookbehind
+ * 
+ * Unicode characters: the symbol in any language is represented as a single byte or multibyte
+ * - if we want to search for café : caf(e|\x{00E9})
+ * - https://unicode-table.com/en/
+ * - https://www.php.net/manual/en/regexp.reference.unicode.php
+ * 
+ * PCRE functions in PHP:
+ * - preg_match() : performs single match
+ * - preg_match_all() : performs global matches
+ * - preg_replace() : performs search and replace
+ * - preg_split() : performs splitting string
+ * 
  */
 
 // Literal Characters Pattern
@@ -115,3 +154,27 @@
 //echo '<pre>';
 //var_dump($match);
 //echo '</pre>';
+
+// Backreferences
+//$pattern = '/<(\w{2})>.+<\/\1>/';
+//$str = '<em>My name is mohammed</em>';
+
+// Find and replace
+//$pattern = '/(to) (have)/';
+//$str = 'I to have go';
+//$match = preg_replace($pattern, 'should $2 $1', $str);
+//echo '<pre>';
+//var_dump($match);
+//echo '</pre>';
+
+// PCRE functions in PHP
+//$pattern = '/str(?:ing|ike|ategy|ive)/i';
+$pattern = '/(str)(ing|ike|ategy|ive)/i';
+$str = 'The following words start with str and followed by various characters: string, startegy, strike and strive';
+//preg_match($pattern, $str, $match);
+//preg_match_all($pattern, $str, $match);
+//preg_match_all($pattern, $str, $matches, PREG_OFFSET_CAPTURE, 75);
+//$matches = preg_replace($pattern, '$1-{$2}', $str);
+echo '<pre>';
+var_dump(preg_split($pattern, $str));
+echo '</pre>';
