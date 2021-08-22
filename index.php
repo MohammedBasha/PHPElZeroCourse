@@ -12,4 +12,4 @@
 //require 'session_handler.php';
 //require './request.php';
 //require './cookie.php';
-require './regular_expressions.php';
+//require './regular_expressions.php';
