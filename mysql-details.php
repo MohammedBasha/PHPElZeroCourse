@@ -15,11 +15,21 @@
  *  4- Blackhole.
  *  5- federated.
  * 
+ * STARTING THE DDL (Data Definition Language) COMMANDS
+ * 
  * - DDL: Data Definition Language: which are mysql statements or queries used to defien and modify the structureof database schema or tables.
  * - DB schema: is the logical way of grouping the db components together like tables, views, stored procedures and other components.
  * - DDL Commands: CREATE, ALTER, TRUNCATE, DROP, COMMENT, and RENAME.
  * 
  * - Table restrictions:
+ * 
+ * - Referential integrity: the technique of maintaining data always in a consistent format, part of the ACID philosophy, like using foreign key constraint between different tables, unique and not nul constraints.
+ * 
+ * - Database relationships:
+ *  1- One to one.
+ *  2- One to many and many to one.
+ *  3- Many to many.
+ *  4- self referencing.
  * 
  * - To start the mysql in comand line (after the installation):
  * - type mysql command and login with the username and password (in new line)
@@ -83,7 +93,8 @@
     -> salary DECIMAL(7,2) DEFAULT 1500.00,
     -> gander ENUM('Male', 'Female') NOT NULL DEFAULT 'Male',
     -> position VARCHAR(20) NOT NULL,
-    -> serial_number CHAR(30) NOT NULL);
+    -> serial_number CHAR(30) NOT NULL,
+    -> CONSTRAINT fk_profile_id FOREIGN KEY (profile_id) REFERENCES users (user_id));
  * 
  * - create table like another table with the same structure:
  * > CREATE TABLE IF NOT EXISTS table_name LIKE table2_name;
@@ -101,7 +112,7 @@
  * > SHOW CREATE TABLE employees;
  * 
  * - rename table:
- * > RENAME TABLE table_name old_table_name TO new_table_name;
+ * > RENAME TABLE old_table_name TO new_table_name;
  * 
  * - empty table from data - in some cases you won't be able to do this with a foreign key constraints:
  * > TRUNCATE TABLE table_name;
@@ -120,12 +131,18 @@
  * - modify existing column's data type or attributes:
  * > ALTER TABLE employees MODIFY position VARCHAR(15) NOT NULL;
  * 
- * - change existing column by deleting it and add a new one instead:
+ * - change existing column by deleting it and adding a new one instead:
  * > ALTER TABLE employees CHANGE COLUMN code sec_code CHAR(30) NOT NULL;
  * 
  * - deleting column:
  * > ALTER TABLE employees DROP COLUMN dummy;
  * 
+ * - adding constraint to a column:
+ * - ALTER TABLE table1_name ADD CONSTRAINT constraint_name FOREIGN KEY (table1_column_name) REFERENCES table2_name (table2_column_name);
+ * 
+ * - https://dev.mysql.com/doc/refman/5.6/en/create-table-foreign-keys.html
+ * - Referential Actions: 
+ * 
+ * ENDING THE DDL (Data Definition Language) COMMANDS
  * 
  */
-
