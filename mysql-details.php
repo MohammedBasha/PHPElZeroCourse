@@ -31,6 +31,10 @@
  *  3- Many to many.
  *  4- self referencing.
  * 
+ * - Date, Time, and Interval Expression:
+ * - https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html
+ * - https://dev.mysql.com/doc/refman/8.0/en/expressions.html#temporal-intervals
+ * 
  * - To start the mysql in comand line (after the installation):
  * - type mysql command and login with the username and password (in new line)
  * - if you want to connect to another server rather than localhost use -h
@@ -144,5 +148,42 @@
  * - Referential Actions: 
  * 
  * ENDING THE DDL (Data Definition Language) COMMANDS
+ * 
+ * STARTING THE DML (Data Manipulation Language) COMMANDS
+ *
+ * - CRUD operations: Create Read Update Delete
+ * 
+ * - insert data to table:
+ * > INSERT INTO users SET username = 'ahmed', password = sha1('ibrahim'), last_login = now(), privilege = 2;
+ * > INSERT INTO users (username, password, last_login, privilege) VALUES ('mohammed', sha1('ahmed'), now(), 1);
+ * 
+ * - to insert a record like another existing record:
+ * > INSERT INTO table_name SELECT * FROM table2_name WHERE id = 3;
+ * 
+ * - to control the duplacated keys (BE VERY CAREFUL):
+ * > INSERT INTO users (username, password, last_login, privilege) VALUES ('mohammed', sha1('ahmed'), now(), 1) ON DUPLICATE KEY UPDATE username = CONCAT(username, 2);
+ * 
+ * - to replace an old (DELETE IT) record with new one (ADD IT):
+ * > REPLACE INTO users SET username = 'ahmed', password = sha1('ibrahim'), last_login = now(), privilege = 2;
+ * > REPLACE INTO users (username, password, last_login, privilege) VALUES ('mohammed', sha1('ahmed'), now(), 1);
+ * > REPLACE INTO table_name SELECT * FROM table2_name WHERE id = 3;
+ * 
+ * - to update records in single table:
+ * > UPDATE table_name SET column = 'value', column2 = 'value2' WHERE column3 = 'value3';
+ * 
+ * - to update records in multiple table:
+ * > UPDATE table_name, table2_name SET table1_name.column = table2_name.column WHERE table2_name.column = 'value3';
+ * 
+ * - delete record:
+ * > DELETE FROM users where user_id = 1;
+ * > DELETE FROM users ORDER BY username DESC LIMIT 2;
+ * 
+ * - UNIONS:
+ * - to select data from two tables (must be the same column's count if selecting * || selecting the same column in each table)
+ * > SELECT * FROM table1 UNION SELECT * FROM table2;
+ * > SELECT column1 FROM table1 UNION SELECT column1 FROM table2;
+ * 
+ * - its usually uses distinct mode, if you won't, then use ALL keyword:
+ * > SELECT column1 FROM table1 UNION ALL SELECT column1 FROM table2;
  * 
  */
