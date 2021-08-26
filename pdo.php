@@ -42,6 +42,8 @@ try {
     echo 'Sorry you got this error: ' . $e->getMessage();
 }
 
+require_once './employee.php';
+
 //echo '<pre>';
 
 // PDO::exec() returning the number of rows affected by the statement && used with insert, update, and delete statements
@@ -52,7 +54,107 @@ try {
 
 //echo '</pre>';
 
-$name = 'Osama';
-if ($connection->exec('insert into employees set name = "' . $name . '"')) {
-    echo 'New emloyee ' . $name . 'has been inserted successfully';
+//$name = 'Osama';
+//if ($connection->exec('insert into employees set name = "' . $name . '"')) {
+//    echo 'New emloyee ' . $name . 'has been inserted successfully';
+//}
+
+if (isset($_POST['submit'])) {
+    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+    $age = filter_input(INPUT_POST, 'age', FILTER_SANITIZE_NUMBER_INT);
+    $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
+    $tax = filter_input(INPUT_POST, 'tax', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    $salary = filter_input(INPUT_POST, 'salary', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+//    $employee = new Employee($name, $age, $tax, $salary);
+    $employee = new Employee;
+    $employee->name = $name;
+    $employee->age = $age;
+    $employee->address = $address;
+    $employee->tax = $tax;
+    $employee->salary = $salary;
+    
+    $insertStmt = 'insert into employees set name="' . $name . '", age=' . $age . ', address="' . $address . '", tax=' . $tax . ', salary=' . $salary;
+    
+    if ($connection->exec($insertStmt)) {
+        $message = 'New emloyee ' . $name . ' has been inserted successfully';
+    } else {
+        $message = 'Sorry No employees was added';
+    }
 }
+
+$sql = 'select * from employees';
+$stmt = $connection->query($sql);
+//$resutl = $stmt->fetchAll(PDO::FETCH_BOTH); // fetches each record in the db as an indexed array with indexed columns
+//$resutl = $stmt->fetchAll(PDO::FETCH_ASSOC); // fetches records as associative array
+//$resutl = $stmt->fetchAll(PDO::FETCH_OBJ); // fetches records as an object
+$resutl = $stmt->fetchAll(PDO::FETCH_CLASS, 'Employee'); // fetches records as an object
+//echo '<pre>';
+//var_dump($resutl);
+//echo '</pre>';
+
+$result = (is_array($resutl) && !empty($resutl))? $resutl : false;
+
+?>
+
+<html>
+    <head>
+        <title>PDO Example</title>
+    </head>
+    <body>
+        <p><?= isset($message)? $message : ''; ?></p>
+        <div class="empForm">
+            <form method="post">
+                <label for="name">Name: </label>
+                <input type="text" name="name" id="name" required><br>
+                
+                <label for="age">Age: </label>
+                <input type="number" name="age" id="age" min="18" max="60" required><br>
+                
+                <label for="address">Address: </label>
+                <input type="text" name="address" id="address" maxlength="100" required><br>
+                
+                <label for="tax">Tax %: </label>
+                <input type="number" name="tax" id="tax" step="0.01" min="1" max="5"><br>
+                
+                <label for="salary">Salary: </label>
+                <input type="number" name="salary" id="salary" step="0.01" min="1500" max="9000"><br>
+                
+                <input type="submit" name="submit" value="save">
+            </form>
+        </div>
+        <div class="empInfo">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Address</th>
+                    <th>Tax</th>
+                    <th>Salary</th>
+                </tr>
+                    <?php
+                    if (false !== $result) {
+                        foreach ($result as $employee) {
+                    ?>
+                <tr>
+                    <td><?= $employee->id; ?></td>
+                    <td><?= $employee->name; ?></td>
+                    <td><?= $employee->age; ?></td>
+                    <td><?= $employee->address; ?></td>
+                    <td><?= $employee->tax; ?></td>
+                    <td><?= $employee->calculateSalary(); ?></td>
+                </tr>
+                    <?php
+                        }
+                    } else {
+                    ?>
+                <tr>
+                    <td>No Employees</td>
+                <tr>
+                    <?php
+                    }
+                    ?>
+            </table>
+        </div>
+    </body>
+</html>
