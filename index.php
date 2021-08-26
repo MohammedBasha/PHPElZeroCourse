@@ -13,3 +13,5 @@
 //require './request.php';
 //require './cookie.php';
 //require './regular_expressions.php';
+
+require 'pdo.php';
