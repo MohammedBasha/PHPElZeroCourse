@@ -59,40 +59,102 @@ require_once './employee.php';
 //    echo 'New emloyee ' . $name . 'has been inserted successfully';
 //}
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submit'])) { // when the user inserting data to the form do this
     $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
     $age = filter_input(INPUT_POST, 'age', FILTER_SANITIZE_NUMBER_INT);
     $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
     $tax = filter_input(INPUT_POST, 'tax', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $salary = filter_input(INPUT_POST, 'salary', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-//    $employee = new Employee($name, $age, $tax, $salary);
-    $employee = new Employee;
-    $employee->name = $name;
-    $employee->age = $age;
-    $employee->address = $address;
-    $employee->tax = $tax;
-    $employee->salary = $salary;
     
-    $insertStmt = 'insert into employees set name="' . $name . '", age=' . $age . ', address="' . $address . '", tax=' . $tax . ', salary=' . $salary;
+    $employee = new Employee($name, $age, $tax, $salary); // using the custom class to set the form data in its props
+//    $employee = new Employee;
+//    $employee->name = $name;
+//    $employee->age = $age;
+//    $employee->address = $address;
+//    $employee->tax = $tax;
+//    $employee->salary = $salary;
     
-    if ($connection->exec($insertStmt)) {
-        $message = 'New emloyee ' . $name . ' has been inserted successfully';
+//    $insertStmt = 'insert into employees set name="' . $name . '", age=' . $age . ', address="' . $address . '", tax=' . $tax . ', salary=' . $salary;
+    
+    $bindedParams = [
+        ':name' => $name,
+        ':age' => $age,
+        ':address' => $address,
+        ':tax' => $tax,
+        ':salary' => $salary
+    ];
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    
+    // Inserting or updating
+    if (isset($_GET['action']) && $_GET['action'] == 'edit' && isset($_GET['id'])) {
+        $insertStmt = 'update employees set name = :name, age = :age, address = :address, tax = :tax, salary = :salary where id = :id';
+        $bindedParams[':id'] = $id;
     } else {
-        $message = 'Sorry No employees was added';
+        $insertStmt = 'insert into employees set name = :name, age = :age, address = :address, tax = :tax, salary = :salary';
+    }
+    
+    // using the prepare statment to isnert the data to db
+    $insStmt = $connection->prepare($insertStmt);
+    
+//    if ($connection->exec($insertStmt)) {
+//        $message = 'New emloyee ' . $name . ' has been inserted successfully';
+//    } else {
+//        $message = 'Sorry No employees was added';
+//    }
+    
+    // executing the insert statement
+    if ($insStmt->execute($bindedParams) === true) {
+        $message = 'New emloyee ' . $name . ' has been saved successfully';
+    } else {
+        $message = 'Sorry No employees was saved';
     }
 }
 
+// Handling the Edit records with $_GET super global array
+if (isset($_GET['action']) && $_GET['action'] == 'edit' && isset($_GET['id'])) {
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    if ($id > 0) {
+        $selectStmt = 'select * from employees where id = :id';
+        $slcStmt = $connection->prepare($selectStmt);
+        $foundEmp = $slcStmt->execute([':id' => $id]);
+        if ($foundEmp === true) {
+            echo '<pre>';
+            $emp = $slcStmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Employee', ['name', 'age', 'address', 'tax', 'salary']); // when using the constructor, you must pass the column's name like that
+            $emp = array_shift($emp);
+            echo '</pre>';
+        }
+    }
+}
+
+// Handling the Delete records with $_GET super global array
+if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    if ($id > 0) {
+        $selectStmt = 'delete from employees where id = :id';
+        $slcStmt = $connection->prepare($selectStmt);
+        $foundEmp = $slcStmt->execute([':id' => $id]);
+        if ($foundEmp === true) {
+            $message = 'Employee has been deleted successfully';
+            header('Location: index.php');
+            exit();
+        }
+    }
+}
+
+ // reading the data from the db
 $sql = 'select * from employees';
 $stmt = $connection->query($sql);
 //$resutl = $stmt->fetchAll(PDO::FETCH_BOTH); // fetches each record in the db as an indexed array with indexed columns
 //$resutl = $stmt->fetchAll(PDO::FETCH_ASSOC); // fetches records as associative array
 //$resutl = $stmt->fetchAll(PDO::FETCH_OBJ); // fetches records as an object
-$resutl = $stmt->fetchAll(PDO::FETCH_CLASS, 'Employee'); // fetches records as an object
+//$resutl = $stmt->fetchAll(PDO::FETCH_CLASS, 'Employee'); // fetches records as a class and provide the custom class Employee to use its methods
+$result = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Employee', ['name', 'age', 'address', 'tax', 'salary']); // when using the constructor, you must pass the column's name like that
+
 //echo '<pre>';
 //var_dump($resutl);
 //echo '</pre>';
 
-$result = (is_array($resutl) && !empty($resutl))? $resutl : false;
+$result = (is_array($result) && !empty($result))? $result : false;
 
 ?>
 
@@ -100,24 +162,24 @@ $result = (is_array($resutl) && !empty($resutl))? $resutl : false;
     <head>
         <title>PDO Example</title>
     </head>
-    <body>
+    <body style="display: flex;">
         <p><?= isset($message)? $message : ''; ?></p>
         <div class="empForm">
             <form method="post">
                 <label for="name">Name: </label>
-                <input type="text" name="name" id="name" required><br>
+                <input type="text" name="name" id="name" value="<?= isset($emp)? $emp->name : ''; ?>" required><br>
                 
                 <label for="age">Age: </label>
-                <input type="number" name="age" id="age" min="18" max="60" required><br>
+                <input type="number" name="age" id="age" min="18" max="60" value="<?= isset($emp)? $emp->age : ''; ?>" required><br>
                 
                 <label for="address">Address: </label>
-                <input type="text" name="address" id="address" maxlength="100" required><br>
+                <input type="text" name="address" id="address" maxlength="100" value="<?= isset($emp)? $emp->address : ''; ?>" required><br>
                 
                 <label for="tax">Tax %: </label>
-                <input type="number" name="tax" id="tax" step="0.01" min="1" max="5"><br>
+                <input type="number" name="tax" id="tax" step="0.01" min="1" max="5" value="<?= isset($emp)? $emp->tax : ''; ?>"><br>
                 
                 <label for="salary">Salary: </label>
-                <input type="number" name="salary" id="salary" step="0.01" min="1500" max="9000"><br>
+                <input type="number" name="salary" id="salary" step="0.01" min="1500" max="9000" value="<?= isset($emp)? $emp->salary : ''; ?>"><br>
                 
                 <input type="submit" name="submit" value="save">
             </form>
@@ -131,6 +193,7 @@ $result = (is_array($resutl) && !empty($resutl))? $resutl : false;
                     <th>Address</th>
                     <th>Tax</th>
                     <th>Salary</th>
+                    <th>Controls</th>
                 </tr>
                     <?php
                     if (false !== $result) {
@@ -143,6 +206,10 @@ $result = (is_array($resutl) && !empty($resutl))? $resutl : false;
                     <td><?= $employee->address; ?></td>
                     <td><?= $employee->tax; ?></td>
                     <td><?= $employee->calculateSalary(); ?></td>
+                    <td>
+                        <a href="<?= $_SERVER['PHP_SELF'] . '?action=edit&id=' . $employee->id; ?>" title="Edit">Edit</a>
+                        <a href="<?= $_SERVER['PHP_SELF'] . '?action=delete&id=' . $employee->id; ?>" title="Delete" onclick="if(!confirm('Do you want to delete this Employee?')) return false;">Delete</a>
+                    </td>
                 </tr>
                     <?php
                         }
