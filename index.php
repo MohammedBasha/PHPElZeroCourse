@@ -14,4 +14,7 @@
 //require './cookie.php';
 //require './regular_expressions.php';
 
-require 'pdo.php';
+//require 'pdo.php';
+
+//require './abstract_model.php';
+require './inherited_abstract_model.php';
